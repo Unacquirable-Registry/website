@@ -2,6 +2,8 @@ import crypto from 'crypto';
 
 const SESSION_COOKIE = 'session';
 const SESSION_VALUE = 'authenticated';
+/** 8-hour session – enough for a working day without requiring re-login */
+const SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
 
 export function checkPassword(input: string): boolean {
   const adminPassword = process.env.ADMIN_PASSWORD ?? (process.env.NODE_ENV === 'production'
@@ -33,7 +35,7 @@ export function setSessionCookie(cookies: { set: (name: string, value: string, o
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 8
+    maxAge: SESSION_MAX_AGE_SECONDS
   });
 }
 
