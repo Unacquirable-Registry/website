@@ -10,9 +10,11 @@ const SESSION_MAX_AGE_SECONDS = 60 * 60 * SESSION_DURATION_HOURS;
  * In production ADMIN_PASSWORD must be set; in dev it falls back to a fixed dev secret.
  */
 function getSigningSecret(): string {
-  return process.env.ADMIN_PASSWORD ?? (process.env.NODE_ENV === 'production'
-    ? (() => { throw new Error('ADMIN_PASSWORD env var must be set in production'); })()
-    : 'admin123-dev-secret');
+  const secret = process.env.ADMIN_PASSWORD;
+  if (!secret) {
+    throw new Error('ADMIN_PASSWORD environment variable is required');
+  }
+  return secret;
 }
 
 /** Create an HMAC-signed session token containing a random nonce. */
@@ -36,10 +38,10 @@ function verifyToken(token: string): boolean {
   }
 }
 
-export function checkPassword(input: string): boolean {
-  const adminPassword = process.env.ADMIN_PASSWORD ?? (process.env.NODE_ENV === 'production'
-    ? (() => { throw new Error('ADMIN_PASSWORD env var must be set in production'); })()
-    : 'admin123');
+const adminPassword = process.env.ADMIN_PASSWORD;
+if (!adminPassword) {
+  throw new Error('ADMIN_PASSWORD environment variable is required');
+}
   try {
     const a = Buffer.from(input);
     const b = Buffer.from(adminPassword);
