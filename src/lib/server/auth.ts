@@ -4,7 +4,9 @@ const SESSION_COOKIE = 'session';
 const SESSION_VALUE = 'authenticated';
 
 export function checkPassword(input: string): boolean {
-  const adminPassword = process.env.ADMIN_PASSWORD ?? 'admin123';
+  const adminPassword = process.env.ADMIN_PASSWORD ?? (process.env.NODE_ENV === 'production'
+    ? (() => { throw new Error('ADMIN_PASSWORD env var must be set in production'); })()
+    : 'admin123');
   try {
     const a = Buffer.from(input);
     const b = Buffer.from(adminPassword);
@@ -29,6 +31,7 @@ export function setSessionCookie(cookies: { set: (name: string, value: string, o
   cookies.set(SESSION_COOKIE, SESSION_VALUE, {
     path: '/',
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60 * 8
   });
