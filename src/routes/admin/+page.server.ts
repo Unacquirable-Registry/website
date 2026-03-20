@@ -1,11 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { getPendingSubmissions, approveSubmission, rejectSubmission } from '$lib/db';
+import { getDb } from '$lib/db';
 import { isAuthenticated } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ cookies }) => {
   if (!isAuthenticated(cookies)) redirect(303, '/admin/login');
-  const pending = getPendingSubmissions();
+  const db = getDb();
+  const pending = db.getPendingSubmissions();
   return { pending };
 };
 
@@ -15,7 +16,8 @@ export const actions: Actions = {
     const data = await request.formData();
     const id = parseInt(data.get('id') as string, 10);
     if (isNaN(id) || id <= 0) return fail(400, { error: 'Invalid ID' });
-    approveSubmission(id);
+    const db = getDb();
+    db.approveSubmission(id);
     return { success: true };
   },
   reject: async ({ request, cookies }) => {
@@ -23,7 +25,8 @@ export const actions: Actions = {
     const data = await request.formData();
     const id = parseInt(data.get('id') as string, 10);
     if (isNaN(id) || id <= 0) return fail(400, { error: 'Invalid ID' });
-    rejectSubmission(id);
+    const db = getDb();
+    db.rejectSubmission(id);
     return { success: true };
   }
 };

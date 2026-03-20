@@ -1,7 +1,8 @@
 import type { PageServerLoad } from './$types';
-import { getAllEnterprises } from '$lib/db';
+import { getDb } from '$lib/db';
 
 export const load: PageServerLoad = async () => {
-  const enterprises = getAllEnterprises();
+  const db = getDb();
+  const enterprises = db.getAllEnterprises();
   return { enterprises };
 };
