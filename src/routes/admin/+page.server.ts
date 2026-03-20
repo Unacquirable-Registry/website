@@ -14,7 +14,7 @@ export const actions: Actions = {
     if (!isAuthenticated(cookies)) redirect(303, '/admin/login');
     const data = await request.formData();
     const id = parseInt(data.get('id') as string, 10);
-    if (!id) return fail(400, { error: 'Invalid ID' });
+    if (isNaN(id) || id <= 0) return fail(400, { error: 'Invalid ID' });
     approveSubmission(id);
     return { success: true };
   },
@@ -22,7 +22,7 @@ export const actions: Actions = {
     if (!isAuthenticated(cookies)) redirect(303, '/admin/login');
     const data = await request.formData();
     const id = parseInt(data.get('id') as string, 10);
-    if (!id) return fail(400, { error: 'Invalid ID' });
+    if (isNaN(id) || id <= 0) return fail(400, { error: 'Invalid ID' });
     rejectSubmission(id);
     return { success: true };
   }

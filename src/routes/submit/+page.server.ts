@@ -21,7 +21,7 @@ export const actions: Actions = {
     if (!type) errors.type = 'Type is required.';
     if (!jurisdiction) errors.jurisdiction = 'Jurisdiction is required.';
     if (!contact_email) errors.contact_email = 'Contact email is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact_email)) errors.contact_email = 'Invalid email address.';
+    else if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/.test(contact_email)) errors.contact_email = 'Invalid email address.';
 
     if (Object.keys(errors).length > 0) {
       return fail(400, { errors, values: { name, type, jurisdiction, description, website, contact_email } });
