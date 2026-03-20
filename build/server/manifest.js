@@ -1,0 +1,71 @@
+const manifest = (() => {
+function __memo(fn) {
+	let value;
+	return () => value ??= (value = fn());
+}
+
+return {
+	appDir: "_app",
+	appPath: "_app",
+	assets: new Set(["favicon.png"]),
+	mimeTypes: {".png":"image/png"},
+	_: {
+		client: {start:"_app/immutable/entry/start.BMsXrmYc.js",app:"_app/immutable/entry/app.DcbFpxWw.js",imports:["_app/immutable/entry/start.BMsXrmYc.js","_app/immutable/chunks/Dk5tK-iP.js","_app/immutable/chunks/BwUCMdmY.js","_app/immutable/entry/app.DcbFpxWw.js","_app/immutable/chunks/BwUCMdmY.js","_app/immutable/chunks/C9VM4RKl.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		nodes: [
+			__memo(() => import('./chunks/0-Hj0XGOmH.js')),
+			__memo(() => import('./chunks/1-mQJIwYRt.js')),
+			__memo(() => import('./chunks/2-DxtJeoox.js')),
+			__memo(() => import('./chunks/3-BdD0LmxD.js')),
+			__memo(() => import('./chunks/4-Dqa8EVgQ.js')),
+			__memo(() => import('./chunks/5-DMHCiuEy.js')),
+			__memo(() => import('./chunks/6-DtLNfqyJ.js'))
+		],
+		remotes: {
+			
+		},
+		routes: [
+			{
+				id: "/",
+				pattern: /^\/$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 3 },
+				endpoint: null
+			},
+			{
+				id: "/admin",
+				pattern: /^\/admin\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 4 },
+				endpoint: null
+			},
+			{
+				id: "/admin/login",
+				pattern: /^\/admin\/login\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 5 },
+				endpoint: null
+			},
+			{
+				id: "/submit",
+				pattern: /^\/submit\/?$/,
+				params: [],
+				page: { layouts: [0,], errors: [1,], leaf: 6 },
+				endpoint: null
+			}
+		],
+		prerendered_routes: new Set([]),
+		matchers: async () => {
+			
+			return {  };
+		},
+		server_assets: {}
+	}
+}
+})();
+
+const prerendered = new Set([]);
+
+const base = "";
+
+export { base, manifest, prerendered };
+//# sourceMappingURL=manifest.js.map
