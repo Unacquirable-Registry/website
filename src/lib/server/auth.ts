@@ -38,10 +38,11 @@ function verifyToken(token: string): boolean {
   }
 }
 
-const adminPassword = process.env.ADMIN_PASSWORD;
-if (!adminPassword) {
-  throw new Error('ADMIN_PASSWORD environment variable is required');
-}
+export function checkPassword(input: string): boolean {
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) {
+    throw new Error('ADMIN_PASSWORD environment variable is required');
+  }
   try {
     const a = Buffer.from(input);
     const b = Buffer.from(adminPassword);

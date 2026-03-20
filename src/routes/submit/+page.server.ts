@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { createSubmission } from '$lib/db';
+import { submissionSchema } from '$lib/validation';
+import { getDb } from '$lib/db';
 
 export const load: PageServerLoad = async () => {
   return {};
@@ -8,26 +9,31 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
   default: async ({ request }) => {
-    const data = await request.formData();
-    const name = (data.get('name') as string)?.trim();
-    const type = (data.get('type') as string)?.trim();
-    const jurisdiction = (data.get('jurisdiction') as string)?.trim();
-    const description = (data.get('description') as string)?.trim() ?? '';
-    const website = (data.get('website') as string)?.trim() ?? '';
-    const contact_email = (data.get('contact_email') as string)?.trim();
+    const formData = await request.formData();
+    const rawData = {
+      name: formData.get('name') as string,
+      type: formData.get('type') as string,
+      jurisdiction: formData.get('jurisdiction') as string,
+      description: formData.get('description') as string,
+      website: formData.get('website') as string,
+      contact_email: formData.get('contact_email') as string,
+    };
 
-    const errors: Record<string, string> = {};
-    if (!name) errors.name = 'Name is required.';
-    if (!type) errors.type = 'Type is required.';
-    if (!jurisdiction) errors.jurisdiction = 'Jurisdiction is required.';
-    if (!contact_email) errors.contact_email = 'Contact email is required.';
-    else if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/.test(contact_email)) errors.contact_email = 'Invalid email address.';
+    const result = submissionSchema.safeParse(rawData);
 
-    if (Object.keys(errors).length > 0) {
-      return fail(400, { errors, values: { name, type, jurisdiction, description, website, contact_email } });
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      const errors: Record<string, string> = {};
+      for (const [key, messages] of Object.entries(fieldErrors)) {
+        if (messages && messages.length > 0) {
+          errors[key] = messages[0];
+        }
+      }
+      return fail(400, { errors, values: rawData });
     }
 
-    createSubmission({ name, type, jurisdiction, description, website, contact_email });
+    const db = getDb();
+    db.createSubmission(result.data);
     redirect(303, '/submit?success=1');
   }
 };
